@@ -2,6 +2,8 @@ function Button({
   children = "Button",
   variant = "primary",
   className = "",
+  loading = false,
+  disabled = false,
   ...props
 }) {
   const variants = {
@@ -13,10 +15,18 @@ function Button({
   };
   return (
     <button
+      disabled={loading || disabled}
       className={`btn rounded-2xl px-6 font-semibold transition-all duration-300 active:scale-95 ${variants[variant]} ${className}`}
       {...props}
     >
-      {children}
+      {loading ? (
+        <>
+          <span className="loading loading-spinner loading-sm" />
+          Loading...
+        </>
+      ) : (
+        children
+      )}
     </button>
   );
 }

@@ -1,21 +1,36 @@
 import { useState } from "react";
 import { Button, Input } from "./ui";
 import { loginUser } from "../api/authApi";
+import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { addUser } from "../features/auth/authSlice";
+import toast from "react-hot-toast";
 
 function LoginComponent() {
   const [emailId, setEmailId] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
     try {
-      await loginUser({
+      const response = await loginUser({
         emailId,
         password,
       });
+
+      toast.success(response?.data?.message || "Welcome back!");
+      dispatch(addUser(response.data?.user));
+      navigate("/");
     } catch (error) {
-      console.error(error);
+      toast.error(error.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,6 +64,7 @@ function LoginComponent() {
               required
               value={emailId}
               onChange={(e) => setEmailId(e.target.value)}
+              disabled={loading}
             />
 
             <div className="relative">
@@ -60,9 +76,11 @@ function LoginComponent() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
               />
               <button
                 type="button"
+                disabled={loading}
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-base-content/50 hover:text-base-content transition"
               >
@@ -74,6 +92,7 @@ function LoginComponent() {
               <label className="flex cursor-pointer items-center gap-2">
                 <input
                   type="checkbox"
+                  disabled={loading}
                   className="checkbox checkbox-sm checkbox-secondary"
                 />
                 <span className="text-base-content/60">Remember me</span>
@@ -87,7 +106,7 @@ function LoginComponent() {
               </a>
             </div>
 
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" loading={loading}>
               Login
             </Button>
           </form>
