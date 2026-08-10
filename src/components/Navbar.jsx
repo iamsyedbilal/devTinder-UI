@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
 import { removeUser } from "../features/auth/authSlice";
+import { logoutUser } from "../api/authApi";
+import toast from "react-hot-toast";
 
 function Navbar() {
   const user = useSelector((state) => state.auth.user);
@@ -9,10 +11,12 @@ function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     // We'll call the backend logout API here later.
+    const response = await logoutUser();
     dispatch(removeUser());
     navigate("/login");
+    toast.success(response?.data?.message || "User Logout");
   };
 
   return (

@@ -11,6 +11,7 @@ function LoginComponent() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -18,6 +19,7 @@ function LoginComponent() {
     e.preventDefault();
 
     setLoading(true);
+
     try {
       const response = await loginUser({
         emailId,
@@ -28,7 +30,11 @@ function LoginComponent() {
       dispatch(addUser(response.data?.user));
       navigate("/");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed");
+      const responseErrors = error?.response?.data?.errors;
+
+      toast.error(
+        responseErrors?.password || responseErrors?.emailId || "Login failed",
+      );
     } finally {
       setLoading(false);
     }
@@ -56,16 +62,20 @@ function LoginComponent() {
 
           {/* Form */}
           <form className="space-y-5" onSubmit={handleLoginSubmit}>
-            <Input
-              type="email"
-              name="email"
-              placeholder="Email address"
-              autoComplete="email"
-              required
-              value={emailId}
-              onChange={(e) => setEmailId(e.target.value)}
-              disabled={loading}
-            />
+            <div>
+              <Input
+                type="email"
+                name="email"
+                placeholder="Email address"
+                autoComplete="email"
+                required
+                value={emailId}
+                onChange={(e) => {
+                  setEmailId(e.target.value);
+                }}
+                disabled={loading}
+              />
+            </div>
 
             <div className="relative">
               <Input
@@ -75,7 +85,9 @@ function LoginComponent() {
                 autoComplete="current-password"
                 required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
                 disabled={loading}
               />
               <button
