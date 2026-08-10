@@ -1,145 +1,156 @@
-import { useSelector } from "react-redux";
-import { Link } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router";
+import { removeUser } from "../features/auth/authSlice";
 
 function Navbar() {
-  const user = useSelector((state) => state.auth);
-  console.log(user);
+  const user = useSelector((state) => state.auth.user);
+  const loading = useSelector((state) => state.auth.loading);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // We'll call the backend logout API here later.
+    dispatch(removeUser());
+    navigate("/login");
+  };
 
   return (
-    <div className="navbar sticky top-0 z-50 border-b border-base-300/50 bg-base-100/80 px-4 shadow-sm backdrop-blur-xl sm:px-6">
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between">
-        {/* Left - Logo */}
-        <div className="navbar-start">
-          <Link
-            to="/"
-            className="flex items-center gap-2 transition-transform duration-200 hover:scale-[1.02]"
-          >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-violet-600 via-fuchsia-600 to-pink-500 text-lg font-black text-white shadow-lg shadow-fuchsia-500/20">
-              D
-            </div>
+    <div className="navbar">
+      {/* Left - Logo */}
+      <div className="navbar-start">
+        <Link to="/" className="flex items-center">
+          <span className="hidden bg-linear-to-r from-violet-600 via-fuchsia-600 to-pink-500 bg-clip-text text-xl font-extrabold text-transparent sm:block">
+            Dev Tinder
+          </span>
+        </Link>
+      </div>
 
-            <span className="hidden bg-linear-to-r from-violet-600 via-fuchsia-600 to-pink-500 bg-clip-text text-xl font-extrabold text-transparent sm:block">
-              Dev Tinder
-            </span>
-          </Link>
-        </div>
+      {/* Right */}
+      <div className="navbar-end gap-1">
+        {/* Home */}
+        <Link
+          to="/"
+          className="btn btn-ghost btn-sm hidden rounded-xl font-medium sm:flex"
+        >
+          Home
+        </Link>
 
-        {/* Right */}
-        <div className="navbar-end gap-1">
-          {/* Home */}
-          <Link
-            to="/"
-            className="btn btn-ghost btn-sm hidden rounded-xl font-medium sm:flex"
-          >
-            Home
-          </Link>
+        {/* Don't show auth buttons while checking authentication */}
+        {!loading && !user && (
+          <>
+            <Link
+              to="/login"
+              className="btn btn-ghost btn-sm hidden rounded-xl font-medium lg:flex"
+            >
+              Login
+            </Link>
 
-          {/* Explore */}
-          {!user && (
-            <>
-              <Link
-                to="/login"
-                className="btn btn-ghost btn-sm hidden rounded-xl font-medium lg:flex"
-              >
-                Login
-              </Link>
-              <Link
-                to="/signup"
-                className="btn btn-ghost btn-sm hidden rounded-xl font-medium lg:flex"
-              >
-                Signup
-              </Link>
-            </>
-          )}
+            <Link
+              to="/signup"
+              className="btn btn-ghost btn-sm hidden rounded-xl font-medium lg:flex"
+            >
+              Signup
+            </Link>
+          </>
+        )}
 
-          {/* Profile */}
-          {user && (
-            <div className="dropdown dropdown-end">
-              <div
-                tabIndex={0}
-                role="button"
-                className="btn btn-ghost btn-circle avatar ml-1"
-              >
-                <div className="w-9 rounded-full ring-2 ring-fuchsia-500/30 ring-offset-2 ring-offset-base-100">
-                  <img
-                    src={
-                      user?.profileImage || "https://i.pravatar.cc/100?img=12"
-                    }
-                    alt={user?.firstName + "Profile picture"}
-                  />
-                </div>
-              </div>
-
-              <ul
-                tabIndex={0}
-                className="menu dropdown-content z-1 mt-3 w-56 rounded-2xl border border-base-300/50 bg-base-100/95 p-2 shadow-2xl backdrop-blur-xl"
-              >
-                <li className="mb-1">
-                  <a className="rounded-xl">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-fuchsia-500/10">
-                      👤
-                    </span>
-                    Profile
-                  </a>
-                </li>
-
-                <li>
-                  <a className="rounded-xl">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-base-200">
-                      ⚙️
-                    </span>
-                    Settings
-                  </a>
-                </li>
-
-                <div className="my-1 h-px bg-base-300/70" />
-
-                <li>
-                  <a className="rounded-xl text-error hover:bg-error/10">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-error/10">
-                      ↪
-                    </span>
-                    Logout
-                  </a>
-                </li>
-              </ul>
-            </div>
-          )}
-
-          {/* Mobile menu */}
-          <div className="dropdown dropdown-end sm:hidden">
-            <button tabIndex={0} className="btn btn-ghost btn-circle">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
+        {/* Profile */}
+        {!loading && user && (
+          <div className="dropdown dropdown-end">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle avatar ml-1"
+            >
+              <div className="w-9 rounded-full ring-2 ring-fuchsia-500/30 ring-offset-2 ring-offset-base-100">
+                <img
+                  src={user.profileImage || "https://i.pravatar.cc/100?img=12"}
+                  alt={`${user.firstName || "User"} profile picture`}
                 />
-              </svg>
-            </button>
+              </div>
+            </div>
 
             <ul
               tabIndex={0}
-              className="menu dropdown-content z-1 mt-3 w-52 rounded-2xl border border-base-300/50 bg-base-100 p-2 shadow-2xl"
+              className="menu dropdown-content z-1 mt-3 w-56 rounded-2xl border border-base-300/50 bg-base-100/95 p-2 shadow-2xl backdrop-blur-xl"
             >
-              <li>
-                <a className="rounded-xl">Home</a>
+              <li className="mb-1">
+                <Link to="/profile" className="rounded-xl">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-fuchsia-500/10">
+                    👤
+                  </span>
+                  Profile
+                </Link>
               </li>
+
               <li>
-                <a className="rounded-xl">Explore</a>
+                <Link to="/settings" className="rounded-xl">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-base-200">
+                    ⚙️
+                  </span>
+                  Settings
+                </Link>
               </li>
+
+              <div className="my-1 h-px bg-base-300/70" />
+
               <li>
-                <a className="rounded-xl">Create Post</a>
+                <button
+                  onClick={handleLogout}
+                  className="rounded-xl text-error hover:bg-error/10"
+                >
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-error/10">
+                    ↪
+                  </span>
+                  Logout
+                </button>
               </li>
             </ul>
           </div>
+        )}
+
+        {/* Mobile menu */}
+        <div className="dropdown dropdown-end sm:hidden">
+          <button tabIndex={0} className="btn btn-ghost btn-circle">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
+
+          <ul
+            tabIndex={0}
+            className="menu dropdown-content z-1 mt-3 w-52 rounded-2xl border border-base-300/50 bg-base-100 p-2 shadow-2xl"
+          >
+            <li>
+              <Link to="/" className="rounded-xl">
+                Home
+              </Link>
+            </li>
+
+            <li>
+              <Link to="/explore" className="rounded-xl">
+                Explore
+              </Link>
+            </li>
+
+            <li>
+              <Link to="/create-post" className="rounded-xl">
+                Create Post
+              </Link>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
