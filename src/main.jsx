@@ -13,6 +13,8 @@ import Profile from "./pages/Profile.jsx";
 import Login from "./pages/Login.jsx";
 import Connections from "./pages/Connections.jsx";
 import Requests from "./pages/Requests.jsx";
+import Signup from "./pages/Signup.jsx";
+import Settings from "./pages/Settings.jsx";
 
 const router = createBrowserRouter([
   {
@@ -21,9 +23,11 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomeFeed /> },
       { path: "login", element: <Login /> },
+      { path: "signup", element: <Signup /> },
       { path: "connections", element: <Connections /> },
       { path: "profile", element: <Profile /> },
       { path: "connections", element: <Connections /> },
+      { path: "settings", element: <Settings /> },
       { path: "requests", element: <Requests /> },
     ],
   },
@@ -34,7 +38,7 @@ createRoot(document.getElementById("root")).render(
     <Provider store={store}>
       <RouterProvider router={router} />
       <Toaster
-        position="top-right"
+        position="top-center"
         reverseOrder={false}
         toastOptions={{
           duration: 3000,

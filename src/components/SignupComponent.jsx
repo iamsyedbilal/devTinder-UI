@@ -1,0 +1,231 @@
+import { useState } from "react";
+import { Button, Input } from "./ui";
+import { signupUser } from "../api/authApi";
+import { Link, useNavigate } from "react-router";
+import toast from "react-hot-toast";
+import { addUser } from "../features/auth/authSlice";
+import { useDispatch } from "react-redux";
+
+function SignupComponent() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [emailId, setEmailId] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleSignupSubmit = async (e) => {
+    e.preventDefault();
+
+    setErrors({});
+    setLoading(true);
+
+    try {
+      const response = await signupUser({
+        firstName,
+        lastName,
+        emailId,
+        password,
+        confirmPassword,
+      });
+      console.log(response);
+      toast.success(response?.data?.message || "Account created successfully!");
+
+      dispatch(addUser(response?.data?.user));
+      navigate("/profile");
+    } catch (error) {
+      const responseErrors = error?.response?.data?.errors;
+
+      if (responseErrors) {
+        setErrors(responseErrors);
+      } else {
+        toast.error(
+          error?.response?.data?.message || error?.message || "Signup failed",
+        );
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-base-100 px-4 py-12">
+      <div className="w-full max-w-md">
+        <div className="rounded-3xl border border-base-300/50 bg-base-100/80 p-6 shadow-2xl shadow-fuchsia-500/5 backdrop-blur-xl sm:p-8">
+          {/* Header */}
+          <div className="mb-8 text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-violet-600 via-fuchsia-600 to-pink-500 text-2xl font-black text-white shadow-lg shadow-fuchsia-500/20">
+              D
+            </div>
+
+            <h1 className="text-3xl font-extrabold tracking-tight">
+              Create your account
+            </h1>
+
+            <p className="mt-2 text-sm text-base-content/50">
+              Join the developer community
+            </p>
+          </div>
+
+          {/* Form */}
+          <form className="space-y-5" onSubmit={handleSignupSubmit}>
+            {/* First & Last Name */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <Input
+                  type="text"
+                  name="firstName"
+                  placeholder="First name"
+                  autoComplete="given-name"
+                  required
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  disabled={loading}
+                />
+
+                {errors.firstName && (
+                  <p className="mt-1 text-sm text-error">{errors.firstName}</p>
+                )}
+              </div>
+
+              <div>
+                <Input
+                  type="text"
+                  name="lastName"
+                  placeholder="Last name"
+                  autoComplete="family-name"
+                  required
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  disabled={loading}
+                />
+
+                {errors.lastName && (
+                  <p className="mt-1 text-sm text-error">{errors.lastName}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Email */}
+            <div>
+              <Input
+                type="email"
+                name="email"
+                placeholder="Email address"
+                autoComplete="email"
+                required
+                value={emailId}
+                onChange={(e) => setEmailId(e.target.value)}
+                disabled={loading}
+              />
+
+              {errors.emailId && (
+                <p className="mt-1 text-sm text-error">{errors.emailId}</p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div>
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Password"
+                  autoComplete="new-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
+                />
+
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-base-content/50 transition hover:text-base-content"
+                >
+                  {showPassword ? "👁️" : "👁️‍🗨️"}
+                </button>
+              </div>
+
+              {errors.password && (
+                <p className="mt-1 text-sm text-error">{errors.password}</p>
+              )}
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <div className="relative">
+                <Input
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  placeholder="Confirm password"
+                  autoComplete="new-password"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  disabled={loading}
+                />
+
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-base-content/50 transition hover:text-base-content"
+                >
+                  {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+                </button>
+              </div>
+
+              {errors.confirmPassword && (
+                <p className="mt-1 text-sm text-error">
+                  {errors.confirmPassword}
+                </p>
+              )}
+            </div>
+
+            {/* Terms */}
+            <label className="flex cursor-pointer items-start gap-2 text-sm">
+              <input
+                type="checkbox"
+                required
+                disabled={loading}
+                className="checkbox checkbox-sm checkbox-secondary mt-0.5"
+              />
+
+              <span className="text-base-content/60">
+                I agree to the terms and conditions
+              </span>
+            </label>
+
+            {/* Submit */}
+            <Button type="submit" className="w-full" loading={loading}>
+              Create account
+            </Button>
+          </form>
+
+          {/* Login */}
+          <p className="mt-7 text-center text-sm text-base-content/50">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="font-semibold text-fuchsia-500 hover:text-fuchsia-400"
+            >
+              Sign in
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default SignupComponent;

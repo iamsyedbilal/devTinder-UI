@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Input } from "./ui";
 import { loginUser } from "../api/authApi";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { addUser } from "../features/auth/authSlice";
 import toast from "react-hot-toast";
@@ -100,7 +100,7 @@ function LoginComponent() {
               </button>
             </div>
 
-            <div className="flex items-center justify-between text-sm">
+            {/* <div className="flex items-center justify-between text-sm">
               <label className="flex cursor-pointer items-center gap-2">
                 <input
                   type="checkbox"
@@ -116,7 +116,7 @@ function LoginComponent() {
               >
                 Forgot password?
               </a>
-            </div>
+            </div> */}
 
             <Button type="submit" className="w-full" loading={loading}>
               Login
@@ -126,12 +126,12 @@ function LoginComponent() {
           {/* Signup */}
           <p className="mt-7 text-center text-sm text-base-content/50">
             Don't have an account?{" "}
-            <a
-              href="/register"
+            <Link
+              to="/signup"
               className="font-semibold text-fuchsia-500 hover:text-fuchsia-400"
             >
               Create account
-            </a>
+            </Link>
           </p>
         </div>
       </div>

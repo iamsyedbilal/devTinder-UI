@@ -12,10 +12,11 @@ function Navbar() {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    // We'll call the backend logout API here later.
     const response = await logoutUser();
+
     dispatch(removeUser());
     navigate("/login");
+
     toast.success(response?.data?.message || "User Logout");
   };
 
@@ -24,7 +25,7 @@ function Navbar() {
       {/* Left - Logo */}
       <div className="navbar-start">
         <Link to="/" className="flex items-center">
-          <span className="hidden bg-linear-to-r from-violet-600 via-fuchsia-600 to-pink-500 bg-clip-text text-xl font-extrabold text-transparent sm:block">
+          <span className="bg-linear-to-r from-violet-600 via-fuchsia-600 to-pink-500 bg-clip-text text-xl font-extrabold text-transparent">
             Dev Tinder
           </span>
         </Link>
@@ -32,7 +33,7 @@ function Navbar() {
 
       {/* Right */}
       <div className="navbar-end gap-1">
-        {/* Home */}
+        {/* Desktop Home */}
         <Link
           to="/"
           className="btn btn-ghost btn-sm hidden rounded-xl font-medium sm:flex"
@@ -40,7 +41,7 @@ function Navbar() {
           Home
         </Link>
 
-        {/* Don't show auth buttons while checking authentication */}
+        {/* Desktop Guest Links */}
         {!loading && !user && (
           <>
             <Link
@@ -59,26 +60,28 @@ function Navbar() {
           </>
         )}
 
+        {/* Desktop Authenticated Links */}
         {!loading && user && (
-          <div className="flex">
+          <div className="hidden lg:flex">
             <Link
               to="/connections"
-              className="btn btn-ghost btn-sm hidden rounded-xl font-medium lg:flex"
+              className="btn btn-ghost btn-sm rounded-xl font-medium"
             >
               Connections
             </Link>
+
             <Link
               to="/requests"
-              className="btn btn-ghost btn-sm hidden rounded-xl font-medium lg:flex"
+              className="btn btn-ghost btn-sm rounded-xl font-medium"
             >
               Requests
             </Link>
           </div>
         )}
 
-        {/* Profile */}
+        {/* Desktop Profile */}
         {!loading && user && (
-          <div className="dropdown dropdown-end">
+          <div className="dropdown dropdown-end z-50 hidden sm:block">
             <div
               tabIndex={0}
               role="button"
@@ -131,9 +134,13 @@ function Navbar() {
           </div>
         )}
 
-        {/* Mobile menu */}
-        <div className="dropdown dropdown-end sm:hidden">
-          <button tabIndex={0} className="btn btn-ghost btn-circle">
+        {/* Mobile Menu */}
+        <div className="dropdown dropdown-end z-50 sm:hidden">
+          <button
+            tabIndex={0}
+            className="btn btn-ghost btn-circle"
+            aria-label="Open menu"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -152,25 +159,77 @@ function Navbar() {
 
           <ul
             tabIndex={0}
-            className="menu dropdown-content z-1 mt-3 w-52 rounded-2xl border border-base-300/50 bg-base-100 p-2 shadow-2xl"
+            className="menu dropdown-content z-1 mt-3 w-60 rounded-2xl border border-base-300/50 bg-base-100/95 p-2 shadow-2xl backdrop-blur-xl"
           >
+            {/* Common */}
             <li>
               <Link to="/" className="rounded-xl">
-                Home
+                🏠
+                <span>Home</span>
               </Link>
             </li>
 
-            <li>
-              <Link to="/explore" className="rounded-xl">
-                Explore
-              </Link>
-            </li>
+            {/* Guest */}
+            {!loading && !user && (
+              <>
+                <li>
+                  <Link to="/login" className="rounded-xl">
+                    🔐
+                    <span>Login</span>
+                  </Link>
+                </li>
 
-            <li>
-              <Link to="/create-post" className="rounded-xl">
-                Create Post
-              </Link>
-            </li>
+                <li>
+                  <Link to="/signup" className="rounded-xl">
+                    ✨<span>Signup</span>
+                  </Link>
+                </li>
+              </>
+            )}
+
+            {/* Authenticated */}
+            {!loading && user && (
+              <>
+                <li>
+                  <Link to="/connections" className="rounded-xl">
+                    👥
+                    <span>Connections</span>
+                  </Link>
+                </li>
+
+                <li>
+                  <Link to="/requests" className="rounded-xl">
+                    📩
+                    <span>Requests</span>
+                  </Link>
+                </li>
+
+                <li>
+                  <Link to="/profile" className="rounded-xl">
+                    👤
+                    <span>Profile</span>
+                  </Link>
+                </li>
+
+                <li>
+                  <Link to="/settings" className="rounded-xl">
+                    ⚙️
+                    <span>Settings</span>
+                  </Link>
+                </li>
+
+                <div className="my-1 h-px bg-base-300/70" />
+
+                <li>
+                  <button
+                    onClick={handleLogout}
+                    className="rounded-xl text-error hover:bg-error/10"
+                  >
+                    ↪<span>Logout</span>
+                  </button>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>

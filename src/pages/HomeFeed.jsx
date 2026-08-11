@@ -57,7 +57,7 @@ function HomeFeed() {
   }
 
   return (
-    <div className="flex min-h-[80vh] items-center justify-center px-4">
+    <div className="z-20 flex min-h-[80vh] items-center justify-center px-4">
       <div className="relative h-150 w-full max-w-sm">
         {feed
           .slice(0, 2)
