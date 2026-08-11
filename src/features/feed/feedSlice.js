@@ -10,7 +10,7 @@ export const feedSlice = createSlice({
       state.feed = action.payload;
     },
     removeFeed: (state, action) => {
-      state.feed = state.feed.filter((item) => item.id !== action.payload);
+      state.feed = state.feed.filter((item) => item._id !== action.payload);
     },
   },
 });

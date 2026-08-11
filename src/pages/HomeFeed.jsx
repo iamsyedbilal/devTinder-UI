@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { feedUsers } from "../api/feedApi";
+import { feedUsers, sendConnectionRequest } from "../api/feedApi";
 import { useDispatch, useSelector } from "react-redux";
 import { displayFeed, removeFeed } from "../features/feed/feedSlice";
 import Card from "../components/Card";
+import toast from "react-hot-toast";
 
 function HomeFeed() {
   const feed = useSelector((store) => store.feed.feed);
@@ -24,10 +25,22 @@ function HomeFeed() {
     getFeed();
   }, [dispatch, feed.length]);
 
-  const handleSwipe = (userId, direction) => {
-    console.log(direction === "right" ? "Liked:" : "Passed:", userId);
+  const handleSwipe = async (userId, direction) => {
+    try {
+      const status = direction === "right" ? "interested" : "ignore";
+      await sendConnectionRequest(status, userId);
+      dispatch(removeFeed(userId));
 
-    dispatch(removeFeed(userId));
+      if (direction === "right") {
+        toast.success("Connection request sent");
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Something went wrong",
+      );
+    }
   };
 
   if (feed.length === 0) {

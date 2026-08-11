@@ -85,7 +85,9 @@ function Card({ user, isTop, onSwipe }) {
             </div>
 
             <p className="mt-1 text-sm opacity-90">
-              {user?.age} • {user?.gender}
+              {user?.age === null ? "Age not available" : user?.age}{" "}
+              &nbsp;•&nbsp;
+              {user?.gender}
             </p>
           </div>
         </figure>
