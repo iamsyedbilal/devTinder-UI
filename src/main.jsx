@@ -1,16 +1,18 @@
+import "./index.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
-import App from "./App.jsx";
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
-import HomeFeed from "./pages/HomeFeed.jsx";
-import Login from "./pages/Login.jsx";
-import Connections from "./pages/Connections.jsx";
-import Profile from "./pages/Profile.jsx";
 import { store } from "./app/store.js";
 import { Provider } from "react-redux";
 import { Toaster } from "react-hot-toast";
+
+import App from "./App.jsx";
+import HomeFeed from "./pages/HomeFeed.jsx";
+import Profile from "./pages/Profile.jsx";
+import Login from "./pages/Login.jsx";
+import Connections from "./pages/Connections.jsx";
+import Requests from "./pages/Requests.jsx";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +23,8 @@ const router = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "connections", element: <Connections /> },
       { path: "profile", element: <Profile /> },
+      { path: "connections", element: <Connections /> },
+      { path: "requests", element: <Requests /> },
     ],
   },
 ]);

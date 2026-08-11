@@ -5,7 +5,7 @@ import { displayFeed, removeFeed } from "../features/feed/feedSlice";
 import Card from "../components/Card";
 
 function HomeFeed() {
-  const feed = useSelector((store) => store.feedSlice.feed);
+  const feed = useSelector((store) => store.feed.feed);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -14,8 +14,6 @@ function HomeFeed() {
     async function getFeed() {
       try {
         const response = await feedUsers();
-
-        console.log("FEED RESPONSE:", response.data);
 
         dispatch(displayFeed(response?.data?.data || []));
       } catch (error) {

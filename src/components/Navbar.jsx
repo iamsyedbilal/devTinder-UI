@@ -59,6 +59,23 @@ function Navbar() {
           </>
         )}
 
+        {!loading && user && (
+          <div className="flex">
+            <Link
+              to="/connections"
+              className="btn btn-ghost btn-sm hidden rounded-xl font-medium lg:flex"
+            >
+              Connections
+            </Link>
+            <Link
+              to="/requests"
+              className="btn btn-ghost btn-sm hidden rounded-xl font-medium lg:flex"
+            >
+              Requests
+            </Link>
+          </div>
+        )}
+
         {/* Profile */}
         {!loading && user && (
           <div className="dropdown dropdown-end">
